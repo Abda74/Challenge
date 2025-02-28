@@ -13,8 +13,9 @@ const MyRoutes = () => {
             <Route element={<Layout />}>
                 {/* Définition des routes */}
                 <Route path="/" element={<Acceuil />} />
-               <Route path="/articles" element={<Articles />} />
             </Route>
+
+            <Route path="/articles" element={<Articles />} />
 
         </Routes>
     );

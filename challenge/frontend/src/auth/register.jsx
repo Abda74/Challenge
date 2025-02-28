@@ -22,7 +22,7 @@ const Register = () => {
         setIsLoading(true); // Démarre le chargement
 
         try {
-            const response = await fetch('http://localhost:5200/api/register', {
+            const response = await fetch('http://localhost:5200/api/users/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

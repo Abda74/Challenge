@@ -1,6 +1,6 @@
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/Users');
+const bcrypt = require('bcryptjs');
 
 // Enregistrement d'un utilisateur
 const register = async (req, res) => {
@@ -13,8 +13,11 @@ const register = async (req, res) => {
             return res.status(400).json({ message: 'Nom d\'utilisateur ou email déjà pris' });
         }
 
-        // Créer un nouvel utilisateur
-        const newUser = new User({ username, email, password });
+        // Hacher le mot de passe
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Créer un nouvel utilisateur avec le mot de passe haché
+        const newUser = new User({ username, email, password: hashedPassword });
         await newUser.save();
 
         // Générer un token JWT
@@ -29,28 +32,39 @@ const register = async (req, res) => {
     }
 };
 
-// Connexion d'un utilisateur
+// Login
 const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // Trouver l'utilisateur par son nom d'utilisateur
+        // Vérifier si les données sont présentes
+        if (!username || !password) {
+            return res.status(400).json({ message: 'Nom d\'utilisateur et mot de passe requis' });
+        }
+
+        // Trouver l'utilisateur par username
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(400).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' });
         }
 
-        // Comparer les mots de passe
-        const isMatch = await user.comparePassword(password);
+        // Comparer le mot de passe avec le mot de passe haché
+        const isMatch = await bcrypt.compare(password, user.password);
+        console.log('Password provided:', password); // Log du mot de passe fourni
+        console.log('Hashed password in DB:', user.password); // Log du mot de passe haché dans la base de données
+        console.log('Password match:', isMatch); // Log du résultat de la comparaison
+
         if (!isMatch) {
             return res.status(400).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' });
         }
 
         // Générer un token JWT
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Envoyer la réponse avec le token
         res.json({ message: 'Connexion réussie', token });
     } catch (error) {
-        console.error('Erreur serveur lors de la connexion:', error);
+        console.error('Erreur lors de la connexion:', error);
         res.status(500).json({ message: 'Erreur du serveur', error: error.message });
     }
 };
