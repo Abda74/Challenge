@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { RichTextEditor } from "@mantine/rte";
 import axios from "axios";
 
@@ -9,6 +9,23 @@ const ArticleForm = () => {
     const [image, setImage] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [articles, setArticles] = useState([]); // État pour stocker les articles
+    const [editArticleId, setEditArticleId] = useState(null); // État pour gérer l'édition d'un article
+
+    // Fonction pour récupérer les articles
+    const fetchArticles = async () => {
+        try {
+            const response = await axios.get("http://localhost:5200/api/articles");
+            setArticles(response.data); // Mettre à jour la liste des articles
+        } catch (error) {
+            console.error("Erreur lors de la récupération des articles : ", error);
+        }
+    };
+
+    // Récupérer les articles au chargement du composant
+    useEffect(() => {
+        fetchArticles();
+    }, []);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -40,23 +57,36 @@ const ArticleForm = () => {
         };
 
         try {
-            const response = await axios.post("http://localhost:5200/api/articles", articleData, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
+            let response;
+            if (editArticleId) {
+                // Mettre à jour un article existant
+                response = await axios.put(`http://localhost:5200/api/articles/${editArticleId}`, articleData, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+            } else {
+                // Créer un nouvel article
+                response = await axios.post("http://localhost:5200/api/articles", articleData, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+            }
 
-            if (response.status === 200) {
-                alert("Article publié avec succès!");
+            if (response.status === 200 || response.status === 201) {
+                alert(editArticleId ? "Article mis à jour avec succès!" : "Article publié avec succès!");
                 setTitle("");
                 setTheme("");
                 setContent("");
                 setImage(null);
+                setEditArticleId(null); // Réinitialiser l'ID d'édition
+                fetchArticles(); // Récupérer la liste mise à jour des articles
             }
         } catch (error) {
             console.error("Erreur : ", error);
             if (error.response) {
-                setError(`Erreur lors de la publication de l'article: ${error.response.data.message || error.response.statusText}`);
+                setError(`Erreur : ${error.response.data.message || error.response.statusText}`);
             } else if (error.request) {
                 setError("Aucune réponse du serveur. Veuillez vérifier votre connexion réseau.");
             } else {
@@ -67,9 +97,31 @@ const ArticleForm = () => {
         }
     };
 
+    // Fonction pour supprimer un article
+    const handleDelete = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:5200/api/articles/${id}`);
+            if (response.status === 200) {
+                alert("Article supprimé avec succès!");
+                fetchArticles(); // Récupérer la liste mise à jour des articles
+            }
+        } catch (error) {
+            console.error("Erreur lors de la suppression de l'article : ", error);
+        }
+    };
+
+    // Fonction pour modifier un article
+    const handleEdit = (article) => {
+        setTitle(article.title);
+        setTheme(article.theme);
+        setContent(article.content);
+        setImage(article.image);
+        setEditArticleId(article._id); // Définir l'ID de l'article à modifier
+    };
+
     return (
         <div className="p-4 mx-auto bg-white shadow-md rounded-lg container">
-            <h1 className="mb-10 text-3xl font-bold">Ajouter un article</h1>
+            <h1 className="mb-10 text-3xl font-bold">{editArticleId ? "Modifier l'article" : "Ajouter un article"}</h1>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-4 flex items-center border-b p-6">
@@ -120,7 +172,13 @@ const ArticleForm = () => {
                     <button
                         type="button"
                         className="text-black px-4 py-2 rounded-md mr-2"
-                        onClick={() => alert("Annulé")}
+                        onClick={() => {
+                            setTitle("");
+                            setTheme("");
+                            setContent("");
+                            setImage(null);
+                            setEditArticleId(null); // Réinitialiser l'édition
+                        }}
                     >
                         Annuler
                     </button>
@@ -129,10 +187,41 @@ const ArticleForm = () => {
                         className="bg-blue-500 text-white px-4 py-2 rounded-md"
                         disabled={loading}
                     >
-                        {loading ? "Publication..." : "Publier l'article"}
+                        {loading ? (editArticleId ? "Mise à jour..." : "Publication...") : (editArticleId ? "Mettre à jour" : "Publier l'article")}
                     </button>
                 </div>
             </form>
+
+            {/* Liste des articles */}
+            <div className="mt-10">
+                <h2 className="text-2xl font-bold mb-4">Liste des articles</h2>
+                {articles.length === 0 ? (
+                    <p>Aucun article disponible.</p>
+                ) : (
+                    <ul className="space-y-4">
+                        {articles.map((article) => (
+                            <li key={article._id} className="border p-4 rounded-lg shadow-sm">
+                                <h3 className="text-xl font-bold">{article.title}</h3>
+                                <p className="text-gray-600">{article.theme}</p>
+                                <div className="mt-2 flex gap-2">
+                                    <button
+                                        onClick={() => handleEdit(article)}
+                                        className="bg-yellow-500 text-white px-3 py-1 rounded-md"
+                                    >
+                                        Modifier
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(article._id)}
+                                        className="bg-red-500 text-white px-3 py-1 rounded-md"
+                                    >
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
         </div>
     );
 };
