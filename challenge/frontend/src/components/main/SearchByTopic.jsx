@@ -7,7 +7,7 @@ const SearchByTopic = ({ onSelectTopic }) => {
     useEffect(() => {
         const fetchTopics = async () => {
             try {
-                const response = await fetch('http://localhost:5200/api/articles');
+                const response = await fetch('https://challenge-admin.vercel.app/api/articles');
                 if (!response.ok) {
                     throw new Error('Erreur lors de la récupération des articles');
                 }
