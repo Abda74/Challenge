@@ -53,9 +53,9 @@ const ArticleForm = () => {
         try {
             let response;
             if (editArticleId) {
-                response = await axios.put(`http://localhost:5200/api/articles/${editArticleId}`, articleData);
+                response = await axios.put(`https://challenge-admin.vercel.app/api/articles/${editArticleId}`, articleData);
             } else {
-                response = await axios.post("http://localhost:5200/api/articles", articleData);
+                response = await axios.post("https://challenge-admin.vercel.app/api/articles", articleData);
             }
 
             if (response.status === 200 || response.status === 201) {
@@ -77,7 +77,7 @@ const ArticleForm = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:5200/api/articles/${id}`);
+            const response = await axios.delete(`https://challenge-admin.vercel.app/api/articles/${id}`);
             if (response.status === 200) {
                 alert("Article supprimé avec succès!");
                 fetchArticles();

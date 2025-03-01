@@ -10,11 +10,8 @@ connectDB().then(r => console.log(r));
 
 const app = express();
 
-// Autoriser toutes les origines (pour le développement uniquement)
-app.use(cors());
-
 app.use(cors({
-    origin: 'http://challenge-kpfy.vercel.app/',
+    origin: ['https://challenge-kpfy.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
