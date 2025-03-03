@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 import Acceuil from "../pages/Acceuil.jsx";
 import Articles from "../pages/Articles.jsx";
 import Layout from "../pages/Layout.jsx";
+import AuthRoutes from "./AuthRoutes.jsx";
 
 const MyRoutes = () => {
     return (
@@ -13,6 +14,7 @@ const MyRoutes = () => {
             <Route element={<Layout />}>
                 {/* Définition des routes */}
                 <Route path="/" element={<Acceuil />} />
+                <AuthRoutes/>
             </Route>
 
             <Route path="/articles" element={<Articles />} />
