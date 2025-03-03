@@ -26,7 +26,7 @@ const Header = ({ onLogout, showLoginButton = true }) => {
                     {showLoginButton && (
                         <Link
                             to="/login"
-                            className="px-6 py-2 sm:px-6 sm:py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="px-6 py-2 sm:px-6 sm:py-2 sm:text-xs bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             Me connecter
                         </Link>
