@@ -10,7 +10,11 @@ connectDB().then(r => console.log(r));
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: ['https://challenge-kpfy.vercel.app'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 // Augmenter la taille maximale du corps de la requête à 10 Mo
 app.use(express.json({ limit: '10mb' }));
