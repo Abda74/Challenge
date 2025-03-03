@@ -14,10 +14,10 @@ const MyRoutes = () => {
             <Route element={<Layout />}>
                 {/* Définition des routes */}
                 <Route path="/" element={<Acceuil />} />
-                <AuthRoutes/>
             </Route>
 
             <Route path="/articles" element={<Articles />} />
+            <AuthRoutes/>
 
         </Routes>
     );
