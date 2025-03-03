@@ -32,7 +32,8 @@ const register = async (req, res) => {
     }
 };
 
-// Login
+
+//login
 const login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -48,11 +49,8 @@ const login = async (req, res) => {
             return res.status(400).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' });
         }
 
-        // Comparer le mot de passe avec le mot de passe haché
+        // Vérifier si le mot de passe est correct
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log('Password provided:', password); // Log du mot de passe fourni
-        console.log('Hashed password in DB:', user.password); // Log du mot de passe haché dans la base de données
-        console.log('Password match:', isMatch); // Log du résultat de la comparaison
 
         if (!isMatch) {
             return res.status(400).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' });
@@ -68,5 +66,6 @@ const login = async (req, res) => {
         res.status(500).json({ message: 'Erreur du serveur', error: error.message });
     }
 };
+
 
 module.exports = { register, login };
