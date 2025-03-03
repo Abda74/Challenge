@@ -19,7 +19,7 @@ const ArticleForm = () => {
 
     const fetchArticles = async () => {
         try {
-            const response = await axios.get("http://challenge-admin.vercel.app/api/articles");
+            const response = await axios.get("https://challenge-admin.vercel.app/api/articles");
             setArticles(response.data);
         } catch (error) {
             console.error("Erreur lors de la récupération des articles : ", error);
