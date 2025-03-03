@@ -5,13 +5,13 @@ import { Link } from 'react-router-dom';
 const Header = ({ onLogout, showLoginButton = true }) => {
     return (
         <div className="py-2 border-b-2 mb-3">
-            <header className="container m-auto w-full flex justify-between items-center align-center h-[67px] bg-white">
-                <div className="flex items-center">
+            <header className="container m-auto w-full flex flex-wrap justify-between items-center align-center h-[67px] bg-white">
+                <div className="flex items-center w-full sm:w-auto">
                     <img src={Logo} alt="Kimbiz Logo" className="w-10 h-auto mr-3" />
                     <h1 className="text-2xl font-bold">Kimbiz</h1>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end mt-3 sm:mt-0">
                     {/* Bouton "Se déconnecter" */}
                     {onLogout && (
                         <button
