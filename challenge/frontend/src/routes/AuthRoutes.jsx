@@ -7,7 +7,7 @@ import Register from "../auth/register.jsx";
 const AuthRoutes = () => {
     return (
             <Routes>
-                <Route path="/" element={<Navigate to="/Acceuil" />} >
+                <Route path="/" element={<Navigate to="/" />} >
 
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
