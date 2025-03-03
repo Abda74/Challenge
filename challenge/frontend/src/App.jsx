@@ -7,8 +7,8 @@ const App = () => {
     return (
         <div className="App">
             <BrowserRouter>
-                <AuthRoutes />
                 <MyRoutes />
+                <AuthRoutes />
             </BrowserRouter>
         </div>
     );
