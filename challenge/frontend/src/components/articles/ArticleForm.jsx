@@ -4,6 +4,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const ArticleForm = () => {
+    // États pour gérer les données du formulaire
     const [content, setContent] = useState("");
     const [title, setTitle] = useState("");
     const [theme, setTheme] = useState("");
@@ -13,10 +14,12 @@ const ArticleForm = () => {
     const [articles, setArticles] = useState([]);
     const [editArticleId, setEditArticleId] = useState(null);
 
+    // Charger les articles au montage du composant
     useEffect(() => {
         fetchArticles();
     }, []);
 
+    // Fonction pour récupérer les articles depuis l'API
     const fetchArticles = async () => {
         try {
             const response = await axios.get("https://challenge-admin.vercel.app/api/articles");
@@ -26,6 +29,7 @@ const ArticleForm = () => {
         }
     };
 
+    // Gérer le changement d'image
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -37,27 +41,39 @@ const ArticleForm = () => {
         }
     };
 
+    // Soumettre le formulaire (ajout ou modification d'un article)
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
         setError("");
 
+        // Validation des champs obligatoires
         if (!title || !content) {
             setError("Veuillez remplir tous les champs obligatoires.");
             setLoading(false);
             return;
         }
 
+        // Données de l'article à envoyer à l'API
         const articleData = { title, theme, content, image };
 
         try {
             let response;
             if (editArticleId) {
-                response = await axios.put(`https://challenge-admin.vercel.app/api/articles/${editArticleId}`, articleData);
+                // Mettre à jour un article existant
+                response = await axios.put(
+                    `https://challenge-admin.vercel.app/api/articles/${editArticleId}`,
+                    articleData
+                );
             } else {
-                response = await axios.post("https://challenge-admin.vercel.app/api/articles", articleData);
+                // Créer un nouvel article
+                response = await axios.post(
+                    "https://challenge-admin.vercel.app/api/articles",
+                    articleData
+                );
             }
 
+            // Si la requête réussit
             if (response.status === 200 || response.status === 201) {
                 alert(editArticleId ? "Article mis à jour avec succès!" : "Article publié avec succès!");
                 setTitle("");
@@ -65,7 +81,7 @@ const ArticleForm = () => {
                 setContent("");
                 setImage(null);
                 setEditArticleId(null);
-                fetchArticles();
+                fetchArticles(); // Rafraîchir la liste des articles
             }
         } catch (error) {
             console.error("Erreur : ", error);
@@ -75,18 +91,29 @@ const ArticleForm = () => {
         }
     };
 
+    // Supprimer un article
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`https://challenge-admin.vercel.app/api/articles/${id}`);
+            const token = localStorage.getItem("token"); // Récupérer le token JWT
+            const response = await axios.delete(
+                `https://challenge-admin.vercel.app/api/articles/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`, // Inclure le token dans les en-têtes
+                    },
+                }
+            );
+            console.log("Réponse de l'API :", response); // Afficher la réponse pour le débogage
             if (response.status === 200) {
                 alert("Article supprimé avec succès!");
-                fetchArticles();
+                fetchArticles(); // Rafraîchir la liste des articles
             }
         } catch (error) {
             console.error("Erreur lors de la suppression de l'article : ", error);
         }
     };
 
+    // Modifier un article existant
     const handleEdit = (article) => {
         setTitle(article.title);
         setTheme(article.theme);
@@ -97,28 +124,64 @@ const ArticleForm = () => {
 
     return (
         <div className="p-4 mx-auto bg-white shadow-md rounded-lg container">
-            <h1 className="mb-10 text-3xl font-bold">{editArticleId ? "Modifier l'article" : "Ajouter un article"}</h1>
+            <h1 className="mb-10 text-3xl font-bold">
+                {editArticleId ? "Modifier l'article" : "Ajouter un article"}
+            </h1>
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label className="block font-bold">Titre</label>
-                    <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} className="w-full border p-2" required />
+                    <input
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="w-full border p-2"
+                        required
+                    />
                 </div>
                 <div className="mb-4">
                     <label className="block font-bold">Thème</label>
-                    <input type="text" value={theme} onChange={(e) => setTheme(e.target.value)} className="w-full border p-2" />
+                    <input
+                        type="text"
+                        value={theme}
+                        onChange={(e) => setTheme(e.target.value)}
+                        className="w-full border p-2"
+                    />
                 </div>
                 <div className="mb-4">
                     <label className="block font-bold">Image</label>
-                    <input type="file" onChange={handleImageChange} className="w-full border p-2" accept="image/*" />
+                    <input
+                        type="file"
+                        onChange={handleImageChange}
+                        className="w-full border p-2"
+                        accept="image/*"
+                    />
                 </div>
                 <div className="mb-4">
                     <label className="block font-bold">Contenu</label>
-                    <RichTextEditor value={content} onChange={setContent} required placeholder="Entrer un contenu" />
+                    <div className="border rounded p-2 h-64 overflow-auto">
+                        <RichTextEditor
+                            value={content}
+                            onChange={setContent}
+                            required
+                            placeholder="Entrer un contenu"
+                        />
+                    </div>
                 </div>
+
                 <div className="flex justify-end">
-                    <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded" disabled={loading}>
-                        {loading ? (editArticleId ? "Mise à jour..." : "Publication...") : (editArticleId ? "Mettre à jour" : "Publier")}
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                        disabled={loading}
+                    >
+                        {loading
+                            ? editArticleId
+                                ? "Mise à jour..."
+                                : "Publication..."
+                            : editArticleId
+                                ? "Mettre à jour"
+                                : "Publier"}
                     </button>
                 </div>
             </form>
@@ -133,9 +196,24 @@ const ArticleForm = () => {
                             <h3 className="font-bold">{article.title}</h3>
                             <p>{article.theme}</p>
                             <div className="mt-2 flex gap-2">
-                                <button onClick={() => handleEdit(article)} className="bg-yellow-500 text-white px-3 py-1 rounded">Modifier</button>
-                                <button onClick={() => handleDelete(article._id)} className="bg-red-500 text-white px-3 py-1 rounded">Supprimer</button>
-                                <Link to="/" className="bg-green-500 text-white px-3 py-1 rounded">Voir l'article</Link>
+                                <button
+                                    onClick={() => handleEdit(article)}
+                                    className="bg-yellow-500 text-white px-3 py-1 rounded"
+                                >
+                                    Modifier
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(article._id)}
+                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                >
+                                    Supprimer
+                                </button>
+                                <Link
+                                    to="/"
+                                    className="bg-green-500 text-white px-3 py-1 rounded"
+                                >
+                                    Voir l'article
+                                </Link>
                             </div>
                         </li>
                     ))}
