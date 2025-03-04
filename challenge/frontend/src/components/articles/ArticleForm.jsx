@@ -203,7 +203,7 @@ const ArticleForm = () => {
                                     Modifier
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(article)}
+                                    onClick={() => handleDelete(article._id)}
                                     className="bg-red-500 text-white px-3 py-1 rounded focus:bg-red-900"
                                 >
                                     Supprimer

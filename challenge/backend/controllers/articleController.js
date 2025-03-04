@@ -1,6 +1,7 @@
 const Article = require('../models/Articles');
 
-const { v4: uuidv4 } = require('uuid'); // Importation de la fonction pour générer un UUID
+const { v4: uuidv4 } = require('uuid');
+const mongoose = require("mongoose");
 
 
 // Créer un article
@@ -67,13 +68,25 @@ exports.updateArticle = async (req, res) => {
 };
 
 exports.deleteArticle = async (req, res) => {
+    console.log("Requête de suppression reçue pour l'ID :", req.params.id);
     try {
-        const article = await Article.findById(req.params.id);
-        if (!article) return res.status(404).json({ message: 'Article non trouvé' });
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            console.log("ID invalide :", req.params.id);
+            return res.status(400).json({ message: 'ID invalide' });
+        }
 
-        await article.remove();
+        const article = await Article.findById(req.params.id);
+        if (!article) {
+            console.log("Article non trouvé");
+            return res.status(404).json({ message: 'Article non trouvé' });
+        }
+
+        await Article.findByIdAndDelete(req.params.id);
+        console.log("Article supprimé");
         res.status(200).json({ message: 'Article supprimé avec succès' });
     } catch (error) {
+        console.error("Erreur serveur :", error);
         res.status(500).json({ message: 'Erreur serveur' });
     }
 };
+
