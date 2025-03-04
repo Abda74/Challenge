@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Logo from "../assets/img.png";
 
 const Login = () => {
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState(''); // Remplacez `username` par `email`
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -17,11 +17,11 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ email, password }), // Envoyer `email` au lieu de `username`
             });
             const data = await response.json();
             if (response.ok) {
-                localStorage.setItem('token', data.token); // Save token for future requests
+                localStorage.setItem('token', data.token);
                 navigate('/articles');
             } else {
                 setError(data.message);
@@ -46,14 +46,14 @@ const Login = () => {
 
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div>
-                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label> {/* Mettre à jour le label */}
                         <input
-                            type="text"
-                            id="username"
-                            placeholder="Entrez votre nom d'utilisateur"
+                            type="email" // Utiliser `type="email"` pour la validation
+                            id="email"
+                            placeholder="Entrez votre email" {/* Mettre à jour le placeholder */}
                             className="mt-1 px-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)} {/* Mettre à jour le gestionnaire d'événements */}
                             required
                         />
                     </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch } from "react-icons/fa"; // Importer l'icône de recherche
+import { FaSearch } from "react-icons/fa";
 
 const BlogHeader = ({ onSearchResults }) => {
     const [searchTerm, setSearchTerm] = useState("");

@@ -35,25 +35,25 @@ const register = async (req, res) => {
 
 //login
 const login = async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
     try {
         // Vérifier si les données sont présentes
-        if (!username || !password) {
+        if (!email || !password) {
             return res.status(400).json({ message: 'Nom d\'utilisateur et mot de passe requis' });
         }
 
         // Trouver l'utilisateur par username
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' });
+            return res.status(400).json({ message: 'Eamil ou mot de passe incorrect' });
         }
 
         // Vérifier si le mot de passe est correct
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(400).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect' });
+            return res.status(400).json({ message: 'Email ou mot de passe incorrect' });
         }
 
         // Générer un token JWT
