@@ -17,7 +17,7 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }), // Envoyer `email` au lieu de `username`
+                body: JSON.stringify({ email, password }),
             });
             const data = await response.json();
             if (response.ok) {
@@ -48,12 +48,12 @@ const Login = () => {
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label> {/* Mettre à jour le label */}
                         <input
-                            type="email" // Utiliser `type="email"` pour la validation
+                            type="email"
                             id="email"
-                            placeholder="Entrez votre email" {/* Mettre à jour le placeholder */}
+                            placeholder="Entrez votre email"
                             className="mt-1 px-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)} {/* Mettre à jour le gestionnaire d'événements */}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                         />
                     </div>
