@@ -103,10 +103,10 @@ const ArticleForm = () => {
                     },
                 }
             );
-            console.log("Réponse de l'API :", response); // Afficher la réponse pour le débogage
+            console.log("Réponse de l'API :", response);
             if (response.status === 200) {
                 alert("Article supprimé avec succès!");
-                fetchArticles(); // Rafraîchir la liste des articles
+                fetchArticles();
             }
         } catch (error) {
             console.error("Erreur lors de la suppression de l'article : ", error);
@@ -159,7 +159,7 @@ const ArticleForm = () => {
                 </div>
                 <div className="mb-4">
                     <label className="block font-bold">Contenu</label>
-                    <div className="border rounded p-2 h-64 overflow-auto">
+                    <div className="border rounded p-2 h-96 overflow-auto">
                         <RichTextEditor
                             value={content}
                             onChange={setContent}
@@ -198,19 +198,19 @@ const ArticleForm = () => {
                             <div className="mt-2 flex gap-2">
                                 <button
                                     onClick={() => handleEdit(article)}
-                                    className="bg-yellow-500 text-white px-3 py-1 rounded"
+                                    className="bg-yellow-500 text-white px-3 py-1 rounded focus:bg-yellow-600"
                                 >
                                     Modifier
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(article._id)}
-                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                    onClick={() => handleDelete(article)}
+                                    className="bg-red-500 text-white px-3 py-1 rounded focus:bg-red-900"
                                 >
                                     Supprimer
                                 </button>
                                 <Link
                                     to="/"
-                                    className="bg-green-500 text-white px-3 py-1 rounded"
+                                    className="bg-green-500 text-white px-3 py-1 rounded focus:bg-green-900"
                                 >
                                     Voir l'article
                                 </Link>
