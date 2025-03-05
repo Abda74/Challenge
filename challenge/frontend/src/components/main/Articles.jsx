@@ -14,19 +14,28 @@ const Articles = ({ selectedTopic }) => {
         }));
     };
 
-    // Fonction pour gérer les likes et dislikes
+    // Fonction pour gérer les likes et empêcher un utilisateur de liker plusieurs fois
     const handleLike = (articleId) => {
+        const likedArticles = JSON.parse(localStorage.getItem("likedArticles")) || {};
+
         setLikes((prevState) => {
             const currentLikes = prevState[articleId] || 0;
-            const newLikes = currentLikes > 0 ? currentLikes - 1 : currentLikes + 1; // Incrémente ou décrémente les likes
-            return {
-                ...prevState,
-                [articleId]: newLikes,
-            };
+
+            if (likedArticles[articleId]) {
+                // Si l'article est déjà liké, on annule le like
+                delete likedArticles[articleId];
+                localStorage.setItem("likedArticles", JSON.stringify(likedArticles));
+                return { ...prevState, [articleId]: currentLikes - 1 };
+            } else {
+                // Sinon, on ajoute un like
+                likedArticles[articleId] = true;
+                localStorage.setItem("likedArticles", JSON.stringify(likedArticles));
+                return { ...prevState, [articleId]: currentLikes + 1 };
+            }
         });
     };
 
-    // Fetch des articles depuis l'API
+// Fetch des articles depuis l'API
     useEffect(() => {
         const fetchArticles = async () => {
             try {
@@ -37,7 +46,7 @@ const Articles = ({ selectedTopic }) => {
                 const data = await response.json();
                 setArticles(data);
 
-                // Initialiser les likes avec les valeurs existantes (si disponibles)
+                // Initialiser les likes avec les valeurs existantes
                 const initialLikes = {};
                 data.forEach((article) => {
                     initialLikes[article._id] = article.likes || 0;
@@ -50,6 +59,7 @@ const Articles = ({ selectedTopic }) => {
 
         fetchArticles();
     }, []);
+
 
     // Filtrer les articles en fonction du thème sélectionné
     const filteredArticles = selectedTopic
