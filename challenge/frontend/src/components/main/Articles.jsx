@@ -79,8 +79,9 @@ const Articles = ({ selectedTopic }) => {
                             <img
                                 src={article.image}
                                 alt="Image de l'article"
-                                className={`w-50 h-50 object-cover rounded-lg ${expandedArticles[article._id] ? 'mt-4' : 'ml-4 float-right'}`}
+                                className={`w-1/2 h-auto object-cover rounded-lg ${expandedArticles[article._id] ? 'mt-4' : 'ml-4 float-right'}`}
                             />
+
                         </div>
 
                         {/* Bouton "Lire l'article complet" ou "Réduire" */}
