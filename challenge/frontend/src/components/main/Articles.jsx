@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { FaThumbsUp } from "react-icons/fa"; // Import de l'icône de pouce levé
+import { FaThumbsUp } from "react-icons/fa";
+import { v4 as uuidv4 } from 'uuid';
+
+// Utilisation de uuid pour générer un identifiant unique
+const userId = uuidv4(); // Génère un UUID unique
+
 
 const Articles = ({ selectedTopic }) => {
     const [articles, setArticles] = useState([]);
@@ -17,12 +22,14 @@ const Articles = ({ selectedTopic }) => {
     // Fonction pour gérer les likes
     const handleLike = async (articleId) => {
         try {
-            // Envoi de la requête au serveur pour mettre à jour le like
+            const userId = uuidv4();
+
             const response = await fetch(`https://challenge-admin.vercel.app/api/articles/${articleId}/like`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                body: JSON.stringify({ userId }), // Envoi de l'UUID de l'utilisateur dans le body
             });
 
             if (!response.ok) {
@@ -43,6 +50,7 @@ const Articles = ({ selectedTopic }) => {
             console.error("Erreur lors de l'ajout du like:", error);
         }
     };
+
 
 // Fetch des articles depuis l'API
     useEffect(() => {

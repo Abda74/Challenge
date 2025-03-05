@@ -91,21 +91,27 @@ exports.deleteArticle = async (req, res) => {
 
 // Liker un article
 exports.likeArticle = async (req, res) => {
+    const { userId } = req.body;
     try {
         const article = await Article.findById(req.params.id);
-        if (!article) {
-            return res.status(404).json({ message: 'Article non trouvé' });
+        if (!article) return res.status(404).json({ message: 'Article non trouvé' });
+
+        // Vérifier si l'utilisateur a déjà liké cet article
+        if (article.likes && article.likes.includes(userId)) {
+            return res.status(400).json({ message: 'Vous avez déjà liké cet article' });
         }
 
-        article.likes += 1; // Augmenter le nombre de likes
-        await article.save();
+        // Ajouter l'utilisateur aux likes
+        article.likes = article.likes || [];
+        article.likes.push(userId);
 
-        res.status(200).json({ likes: article.likes });
+        await article.save();
+        res.status(200).json({ message: 'Article liké avec succès', likes: article.likes.length });
     } catch (error) {
-        console.error("Erreur lors du like de l'article : ", error);
         res.status(500).json({ message: 'Erreur serveur' });
     }
 };
+
 
 // Disliker un article
 exports.dislikeArticle = async (req, res) => {
