@@ -71,7 +71,7 @@ const Articles = ({ selectedTopic }) => {
                             className={`mt-4 text-gray-700 flex ${expandedArticles[article._id] ? 'flex-col ' : 'flex-row'} justify-between items-start`}
                         >
                             <div
-                                className={`  flex-1 mb-4 overflow-hidden transition-all duration-300 ${expandedArticles[article._id] ? ' order-2 max-h-full' : 'max-h-20'}`}
+                                className={` flex-1 mb-4 overflow-hidden transition-all duration-300 ${expandedArticles[article._id] ? 'm-7 order-2 max-h-full' : 'max-h-20'}`}
                             >
                                 {/* Utilisation de dangerouslySetInnerHTML pour afficher le contenu HTML */}
                                 <div dangerouslySetInnerHTML={{ __html: article.content }} />
@@ -79,7 +79,7 @@ const Articles = ({ selectedTopic }) => {
                             <img
                                 src={article.image}
                                 alt="Image de l'article"
-                                className={` w-1/2 h-2/5 object-cover rounded-lg ${expandedArticles[article._id] ? 'mb-7w-full h-2/5  order-1 mt-4' : 'w-2/4 h-2/5 ml-4 float-right '}`}
+                                className={` w-2/4 h-2/5 object-cover rounded-lg ${expandedArticles[article._id] ? 'mb-7w-full h-2/5  order-1 mt-4' : 'w-2/4 h-2/5 ml-4 float-right '}`}
                             />
 
                         </div>
