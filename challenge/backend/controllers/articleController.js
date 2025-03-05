@@ -1,8 +1,6 @@
 const Article = require('../models/Articles');
-
 const { v4: uuidv4 } = require('uuid');
 const mongoose = require("mongoose");
-
 
 // Créer un article
 exports.createArticle = async (req, res) => {
@@ -67,6 +65,7 @@ exports.updateArticle = async (req, res) => {
     }
 };
 
+// Supprimer un article
 exports.deleteArticle = async (req, res) => {
     console.log("Requête de suppression reçue pour l'ID :", req.params.id);
     try {
@@ -90,3 +89,41 @@ exports.deleteArticle = async (req, res) => {
     }
 };
 
+// Liker un article
+exports.likeArticle = async (req, res) => {
+    try {
+        const article = await Article.findById(req.params.id);
+        if (!article) {
+            return res.status(404).json({ message: 'Article non trouvé' });
+        }
+
+        article.likes += 1; // Augmenter le nombre de likes
+        await article.save();
+
+        res.status(200).json({ likes: article.likes });
+    } catch (error) {
+        console.error("Erreur lors du like de l'article : ", error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
+
+// Disliker un article
+exports.dislikeArticle = async (req, res) => {
+    try {
+        const article = await Article.findById(req.params.id);
+        if (!article) {
+            return res.status(404).json({ message: 'Article non trouvé' });
+        }
+
+        if (article.likes > 0) {
+            article.likes -= 1; // Décrémenter le nombre de likes
+        }
+
+        await article.save();
+
+        res.status(200).json({ likes: article.likes });
+    } catch (error) {
+        console.error("Erreur lors du dislike de l'article : ", error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
