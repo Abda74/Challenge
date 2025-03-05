@@ -67,7 +67,9 @@ const Articles = ({ selectedTopic }) => {
                         <p className="text-sm text-gray-500 mt-2">
                             {new Date(article.createdAt).toLocaleDateString()}
                         </p>
-                        <div className="mt-4 text-gray-700 flex justify-between items-start">
+                        <div
+                            className={`mt-4 text-gray-700 flex ${expandedArticles[article._id] ? 'flex-col' : 'flex-row'} justify-between items-start`}
+                        >
                             <div
                                 className={`flex-1 mb-4 overflow-hidden transition-all duration-300 ${expandedArticles[article._id] ? 'max-h-full' : 'max-h-20'}`}
                             >
@@ -77,7 +79,7 @@ const Articles = ({ selectedTopic }) => {
                             <img
                                 src={article.image}
                                 alt="Image de l'article"
-                                className="w-50 h-50 object-cover rounded-lg float-right ml-4"
+                                className={`w-50 h-50 object-cover rounded-lg ${expandedArticles[article._id] ? 'mt-4' : 'ml-4 float-right'}`}
                             />
                         </div>
 
