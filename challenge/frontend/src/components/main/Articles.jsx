@@ -14,34 +14,43 @@ const Articles = ({ selectedTopic }) => {
         }));
     };
 
-    // Fonction pour gérer les likes et empêcher un utilisateur de liker plusieurs fois
-    const handleLike = (articleId) => {
-        const likedArticles = JSON.parse(localStorage.getItem("likedArticles")) || {};
+    // Fonction pour gérer les likes
+    const handleLike = async (articleId) => {
+        try {
+            // Envoi de la requête au serveur pour mettre à jour le like
+            const response = await fetch(`https://challenge-admin.vercel.app/api/articles/${articleId}/like`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
 
-        setLikes((prevState) => {
-            const currentLikes = prevState[articleId] || 0;
-
-            if (likedArticles[articleId]) {
-                // Si l'article est déjà liké, on annule le like
-                delete likedArticles[articleId];
-                localStorage.setItem("likedArticles", JSON.stringify(likedArticles));
-                return { ...prevState, [articleId]: currentLikes - 1 };
-            } else {
-                // Sinon, on ajoute un like
-                likedArticles[articleId] = true;
-                localStorage.setItem("likedArticles", JSON.stringify(likedArticles));
-                return { ...prevState, [articleId]: currentLikes + 1 };
+            if (!response.ok) {
+                throw new Error("Erreur lors de l'ajout du like");
             }
-        });
+
+            // Récupérer les nouvelles données après l'ajout du like
+            const updatedArticle = await response.json();
+
+            // Mettre à jour l'état des articles avec les nouvelles valeurs de likes
+            setArticles((prevArticles) =>
+                prevArticles.map((article) =>
+                    article._id === articleId ? { ...article, likes: updatedArticle.likes } : article
+                )
+            );
+
+        } catch (error) {
+            console.error("Erreur lors de l'ajout du like:", error);
+        }
     };
 
 // Fetch des articles depuis l'API
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await fetch('https://challenge-admin.vercel.app/api/articles');
+                const response = await fetch("https://challenge-admin.vercel.app/api/articles");
                 if (!response.ok) {
-                    throw new Error('Erreur lors de la récupération des articles');
+                    throw new Error("Erreur lors de la récupération des articles");
                 }
                 const data = await response.json();
                 setArticles(data);
@@ -59,6 +68,7 @@ const Articles = ({ selectedTopic }) => {
 
         fetchArticles();
     }, []);
+
 
 
     // Filtrer les articles en fonction du thème sélectionné
