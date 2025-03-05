@@ -4,7 +4,7 @@ import { FaThumbsUp } from "react-icons/fa"; // Import de l'icône de pouce lev�
 const Articles = ({ selectedTopic }) => {
     const [articles, setArticles] = useState([]);
     const [expandedArticles, setExpandedArticles] = useState({}); // État pour suivre les articles développés
-    const [likes, setLikes] = useState({}); // État pour stocker les likes de chaque article
+    const [likes, setLikes] = useState({});
 
     // Fonction pour basculer l'état d'un article (développé/réduit)
     const handleReadArticle = (articleId) => {
@@ -40,7 +40,7 @@ const Articles = ({ selectedTopic }) => {
                 // Initialiser les likes avec les valeurs existantes (si disponibles)
                 const initialLikes = {};
                 data.forEach((article) => {
-                    initialLikes[article._id] = article.likes || 0; // Utilisez les likes existants ou 0 par défaut
+                    initialLikes[article._id] = article.likes || 0;
                 });
                 setLikes(initialLikes);
             } catch (error) {
@@ -65,7 +65,7 @@ const Articles = ({ selectedTopic }) => {
                             <h2 className="text-xl font-semibold text-gray-800">{article.title}</h2>
                         </header>
                         <p className="text-sm text-gray-500 mt-2">
-                            {new Date(article.createdAt).toLocaleDateString()} {/* Affichage de la date */}
+                            {new Date(article.createdAt).toLocaleDateString()}
                         </p>
                         <div className="mt-4 text-gray-700 flex justify-between items-start">
                             <div
@@ -77,9 +77,10 @@ const Articles = ({ selectedTopic }) => {
                             <img
                                 src={article.image}
                                 alt="Image de l'article"
-                                className="ml-4 w-50 h-50 object-cover rounded-lg"
+                                className="w-50 h-50 object-cover rounded-lg float-right ml-4"
                             />
                         </div>
+
                         {/* Bouton "Lire l'article complet" ou "Réduire" */}
                         <button
                             onClick={() => handleReadArticle(article._id)}
