@@ -79,8 +79,9 @@ const Articles = ({ selectedTopic }) => {
                             <img
                                 src={article.image}
                                 alt="Image de l'article"
-                                className={` w-1/2 h-2/5 object-cover rounded-lg ${expandedArticles[article._id] ? 'mb-7w-full h-2/5  order-1 mt-4' : 'w-2/4 h-2/5 ml-4 float-right '}`}
+                                className={`w-[300px] h-[200px] object-cover rounded-lg ${expandedArticles[article._id] ? 'mb-7 w-full order-1 mt-4' : 'ml-4 float-right'}`}
                             />
+
 
                         </div>
 
