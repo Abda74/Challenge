@@ -1,17 +1,18 @@
 import React from 'react';
 import Logo from '../../assets/img.png';
 import { Link } from 'react-router-dom';
+import "../../App.css"
 
 const Header = ({ onLogout, showLoginButton = true }) => {
     return (
-        <div className="py-2 border-b-2 mb-3">
-            <header className="container m-auto w-full flex justify-between items-center align-center h-[67px] bg-white">
-                <div className="flex items-center">
+        <div className="header py-2 border-b-2 mb-3">
+            <header className="header-nav container m-auto w-full flex justify-between items-center align-center h-[67px] bg-white">
+                <div className="image flex items-center">
                     <img src={Logo} alt="Kimbiz Logo" className="w-10 h-auto mr-3" />
                     <h1 className="text-2xl font-bold">Kimbiz</h1>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className=" button flex items-center gap-4">
                     {/* Bouton "Se déconnecter" */}
                     {onLogout && (
                         <button
